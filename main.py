@@ -61,11 +61,9 @@ if __name__=='__main__':
                     if time == 0:
                         eps_perm, p1, q1, eps_1, p2, q2 = server.get_instantaneous_randomization_configs(time)
                         reports = []
-                        random_users_index = random.sample(list(range(n)), int(n*0.2))
                         for u_ind, user in enumerate(users):
-                            if True:#u_ind in random_users_index:
-                                report = user.instantaneous_randomization(p1, q1, p2, q2)
-                                reports.append(report)
+                            report = user.instantaneous_randomization(p1, q1, p2, q2)
+                            reports.append(report)
                         estimated_histogram = server.get_estimated_histogram(reports, time)
                         print(time)
                         dic_mse[seed][0] = mean_squared_error(real_freq, estimated_histogram)
