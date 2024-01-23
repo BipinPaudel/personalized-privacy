@@ -11,8 +11,8 @@ import random
 
 if __name__=='__main__':
     
+    number_of_users = [100, 1000, 10000, 100000]
     number_of_users = [100, 1000, 10000]
-    number_of_users = [100000]
     for n in number_of_users:
         accuracy = 0
          
@@ -22,14 +22,14 @@ if __name__=='__main__':
             data = gen_binary_data(n=n, one_prob=0.3)
             k = 2
             real_freq = np.unique(data, return_counts=True)[-1] / n
-            num_seed = 5
+            num_seed = 50
 
             
             print(f'Real frequency {real_freq}')
             epsilons = [[2,0.1], [0.1, 0.6], [0.1,0.8],[0.1,1], [0.1,1], [0.1,1],[0.1,1],[0.1,1],[0.1,1.2],[0.1,1.4],[0.1,1.4],[0.1,1.4]]
             
 
-            epsilons = [[2.6,0.5],[0.5,0.8],[0.5,1],[0.5,1.5],[0.5,2], [0.5,2.5],[0.5,2.5],[1, 2.5], [1.5,2.5]] + 200 * [[2,2.5]]
+            epsilons = [[2.6,0.01],[0.01,0.8],[0.01,1],[0.01,1.5],[0.01,2], [0.01,2.5],[0.01,2.5],[0.01, 2.5], [0.01,2.5]] + 20 * [[0.01,2.5]]
             # epsilons = [[2.6,0.5],[0.5,0.8],[0.5,1],[0.5,1.5]]
 
             times = len(epsilons)
@@ -38,8 +38,8 @@ if __name__=='__main__':
             average_histograms = []
             evolving_histogram_seed = []    
             dic_mse = {seed: {
-                
-            } for seed in range(num_seed)}
+                } for seed in range(num_seed)
+            }
 
             for seed in range(num_seed):
 
@@ -83,7 +83,7 @@ if __name__=='__main__':
                                 report = u.instantaneous_randomization(p1, q1, p_min, q_min)
                             reports.append(report)
                         estimated_histogram = server.get_estimated_histogram(reports, time, private_list = np.array(data['v']))
-                        print(f'Seed: {seed}, time: {time}, estimated: {estimated_histogram}')
+                        print(f'Seed: {seed}, users: {n}, time: {time}, estimated: {estimated_histogram}')
                         dic_mse[seed][time] = mean_squared_error(real_freq, estimated_histogram)
 
                     evolving_histogram.append(estimated_histogram)
@@ -99,7 +99,8 @@ if __name__=='__main__':
             for time in range(times):
                 errors.append(np.mean([dic_mse[seed][time] for seed in range(num_seed)]))
             print(errors)
-            plt.plot(errors)
+            x_axis = [i+1 for i in range(times)]
+            plt.plot(x_axis, errors)
             plt.savefig(f'errors_nusers_{n}_exp_instance_{exp_ins}_accuracy_{accuracy}.png')
 
         print(accuracy)

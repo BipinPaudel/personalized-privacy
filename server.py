@@ -147,11 +147,22 @@ class Server:
         Goal is to classify whether user belongs to majority or minority based on the submitted value at all times
         """
 
+        latest_hist = self.histograms[-1]
+        majority = latest_hist.argmax()
+        current_hist = [1] * 2
 
         prob_of_users_in_majority = self.calc_user_prob_majority(p1, q1, p_min, q_min, p_maj, q_maj, private_list)
         
         binomial_array = np.random.binomial(1, prob_of_users_in_majority)
-        return np.unique(1-binomial_array, return_counts=True)[-1] / len(binomial_array)
+        if majority == 0:
+            current_hist[0] = len(binomial_array[binomial_array==1])
+            current_hist[1] = len(binomial_array[binomial_array==0])
+        else:
+            current_hist[1] = len(binomial_array[binomial_array==1])
+            current_hist[0] = len(binomial_array[binomial_array==0])
+
+
+        return np.array(current_hist)/len(binomial_array)
         # return np.array([len(binomial_array[binomial_array==1]), len(binomial_array[binomial_array==0])])/len(self.noisy_reports[-1])
 
         # majority_bin = latest_nr_report[binomial_array==1]
