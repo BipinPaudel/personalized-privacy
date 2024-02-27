@@ -106,8 +106,8 @@ def L_GRR_Aggregator_MI(reports, k, eps_perm, eps_1):
         q1 = (1 - p1) / (k - 1)
 
         # GRR parameters for round 2
-        p2 = (q1 - np.exp(eps_1) * p1) / ((-p1 * np.exp(eps_1)) + k*q1*np.exp(eps_1) - q1*np.exp(eps_1) - p1*(k-1)+q1)
-        q2 = (1 - p2) / (k-1)
+        # p2 = (q1 - np.exp(eps_1) * p1) / ((-p1 * np.exp(eps_1)) + k*q1*np.exp(eps_1) - q1*np.exp(eps_1) - p1*(k-1)+q1)
+        # q2 = (1 - p2) / (k-1)
         p2 = np.exp(eps_1) / (np.exp(eps_1) + k - 1)
         q2 = (1 - p2) / (k - 1)
 

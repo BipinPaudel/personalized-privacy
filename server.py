@@ -111,7 +111,7 @@ class Server:
         # self.prior = np.unique(private_list, return_counts=True)[-1] / len(nr)
         # stores estimated histogram for all times
         # self.histograms = np.array([hist])
-        print(f'First time estimated: {self.prior}')
+        # print(f'First time estimated: {self.prior}')
         # calculate p_b1_bstar
         eps_perm, p1, q1, eps_1, p2, q2 = self.get_instantaneous_randomization_configs(time)
         p_b1_bstar = np.array([[p2, q2],
@@ -119,18 +119,20 @@ class Server:
         self.p_b_bstar = np.array([p_b1_bstar])
 
         #calculating P(B=0|B_1)
-        posterior = []
-        for user_index in range(len(nr)):
-            user_disclosed = self.noisy_reports[:,user_index]
-            numerator = self.prior[0]*self.p_bstar_b[0][0]* np.prod(self.p_b_bstar[np.arange(len(self.p_b_bstar)),user_disclosed][:,0])  + self.prior[0]*self.p_bstar_b[1][0] * np.prod(self.p_b_bstar[np.arange(len(self.p_b_bstar)),user_disclosed][:,1])
-            d_b_0 = numerator
-            d_b_1 = self.prior[1] * self.p_bstar_b[0][1] * np.prod(self.p_b_bstar[np.arange(len(self.p_b_bstar)),user_disclosed][:,0]) + self.prior[1] * self.p_bstar_b[1][1] * np.prod(self.p_b_bstar[np.arange(len(self.p_b_bstar)),user_disclosed][:,1])
-            denominator = d_b_0 + d_b_1
-            posterior.append(numerator/denominator)
         
-        estimated = np.array([np.sum(posterior), len(nr)-np.sum(posterior)])
-        estimated /= len(nr)
-        return estimated
+        return self.prior
+        # posterior = []
+        # for user_index in range(len(nr)):
+        #     user_disclosed = self.noisy_reports[:,user_index]
+        #     numerator = self.prior[0]*self.p_bstar_b[0][0]* np.prod(self.p_b_bstar[np.arange(len(self.p_b_bstar)),user_disclosed][:,0])  + self.prior[0]*self.p_bstar_b[1][0] * np.prod(self.p_b_bstar[np.arange(len(self.p_b_bstar)),user_disclosed][:,1])
+        #     d_b_0 = numerator
+        #     d_b_1 = self.prior[1] * self.p_bstar_b[0][1] * np.prod(self.p_b_bstar[np.arange(len(self.p_b_bstar)),user_disclosed][:,0]) + self.prior[1] * self.p_bstar_b[1][1] * np.prod(self.p_b_bstar[np.arange(len(self.p_b_bstar)),user_disclosed][:,1])
+        #     denominator = d_b_0 + d_b_1
+        #     posterior.append(numerator/denominator)
+        
+        # estimated = np.array([np.sum(posterior), len(nr)-np.sum(posterior)])
+        # estimated /= len(nr)
+        # return estimated
     
     def estimate_first_time(self, nr):
         eps_perm = self.epsilons[0][0]
@@ -180,8 +182,15 @@ class Server:
     def perform_other_time_estimation(self, nr, time, private_list=None):
             
         eps_perm, p1, q1, eps_min, p_min, q_min, eps_maj, p_maj, q_maj = self.get_instantaneous_randomization_configs(time)
+        
         self.noisy_reports = np.vstack((self.noisy_reports, nr))
-        prior = self.prior#self.histograms[-1]
+        
+        # prior = self.priord.histograms[-1]
+
+
+        prior =  self.histograms[-1]
+        # weight = np.array([0.7,0.3])
+        # prior = np.dot(weight,np.array([prior, self.prior]))
         p_b_bstar = Server.calc_p_b_bstar(prior, p1, q1, p_maj, q_maj, p_min, q_min)
         self.p_b_bstar = np.vstack((self.p_b_bstar, [p_b_bstar]))
 
