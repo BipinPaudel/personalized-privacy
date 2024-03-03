@@ -72,6 +72,8 @@ class Server:
     def get_estimated_histogram(self, nr, time, private_list=None):
         if time == 0:
             estimated_histogram = self.perform_first_time_estimation(nr, time, private_list)
+            if estimated_histogram[0] == 1:
+                estimated_histogram = np.array([0.99, 0.01])
             self.histograms = np.array([estimated_histogram])
         else:
             estimated_histogram = self.perform_other_time_estimation(nr, time, private_list)
@@ -188,7 +190,7 @@ class Server:
         # prior = self.priord.histograms[-1]
 
 
-        prior =  self.histograms[-1]
+        prior =  self.prior#self.histograms[-1]
         # weight = np.array([0.7,0.3])
         # prior = np.dot(weight,np.array([prior, self.prior]))
         p_b_bstar = Server.calc_p_b_bstar(prior, p1, q1, p_maj, q_maj, p_min, q_min)
